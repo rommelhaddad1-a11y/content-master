@@ -4,329 +4,418 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Content Master">
-<title>Content Master — Romel</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rommel Studio">
+<meta name="theme-color" content="#09090B">
+<title>Rommel Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#06060A;--bg2:#0C0C14;--card:#101018;--card2:#16161F;
-  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
-  --red:#E11D48;--red-dim:rgba(225,29,72,.12);--red-glow:rgba(225,29,72,.3);--red2:#9F1239;
-  --gold:#D4A843;--gold-dim:rgba(212,168,67,.12);
-  --blue:#3B82F6;--blue-dim:rgba(59,130,246,.12);
-  --green:#10B981;--txt:#F0F0F8;--txt2:#7070A0;--txt3:#303050;
+:root {
+  --bg:#09090B;--bg2:#0F0F12;--bg3:#151518;
+  --surface:#1A1A1F;--surface2:#212127;--surface3:#2A2A32;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.10);--border3:rgba(255,255,255,.16);
+  --accent:#C8AA6E;--accent-dim:rgba(200,170,110,.10);--accent-mid:rgba(200,170,110,.20);--accent-glow:rgba(200,170,110,.25);
+  --red:#E5484D;--red-dim:rgba(229,72,77,.10);
+  --blue:#5B9EF5;--blue-dim:rgba(91,158,245,.10);
+  --green:#46A758;--green-dim:rgba(70,167,88,.12);
+  --txt:#ECECEF;--txt2:#8B8B9E;--txt3:#52525B;
+  --font:'IBM Plex Sans Arabic',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --serif:'Instrument Serif',serif;
+  --r:12px;--rs:8px;--rl:16px;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --safe-b:env(safe-area-inset-bottom,0px);
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;}
-body{background:var(--bg);color:var(--txt);font-family:'Noto Naskh Arabic',serif;display:flex;flex-direction:column;height:100dvh;}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4;}
-::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--txt);font-family:var(--font);font-size:14px;line-height:1.6;display:flex;flex-direction:column;height:100dvh}
+body::after{content:'';position:fixed;inset:0;opacity:.025;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border3);border-radius:3px}
+button{border:none;cursor:pointer;font-family:var(--font);-webkit-tap-highlight-color:transparent}
+textarea,input{outline:none;font-family:var(--font)}
 
-.hdr{flex-shrink:0;padding:14px 16px 12px;background:linear-gradient(180deg,#0A0A12 0%,transparent 100%);border-bottom:1px solid var(--border);position:relative;z-index:10;}
-.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.brand{display:flex;align-items:center;gap:10px;}
-.brand-icon{width:36px;height:36px;background:var(--red);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 16px var(--red-glow);flex-shrink:0;}
-.brand-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;line-height:1;}
-.brand-sub{font-size:10px;color:var(--txt2);font-family:'DM Mono',monospace;margin-top:2px;letter-spacing:1px;}
-.fb-ok{color:rgba(16,185,129,.6)!important;}
-.hdr-btn{background:none;border:1px solid var(--border2);border-radius:8px;padding:7px 12px;font-size:11px;color:var(--txt2);font-family:'DM Mono',monospace;transition:.2s;}
-.hdr-btn:active{color:var(--red);border-color:var(--red);}
-.track-row{display:flex;gap:8px;}
-.track-btn{flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border2);background:none;font-size:12px;font-weight:600;color:var(--txt2);font-family:'Noto Naskh Arabic',serif;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
-.track-btn.act-a{border-color:var(--red);color:var(--red);background:var(--red-dim);box-shadow:0 0 12px rgba(225,29,72,.15);}
-.track-btn.act-b{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);box-shadow:0 0 12px rgba(59,130,246,.15);}
-.track-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.header{flex-shrink:0;padding:16px 18px 14px;background:var(--bg);border-bottom:1px solid var(--border);position:relative;z-index:50}
+.header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),#A08642);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;font-style:italic;color:#09090B;font-weight:600}
+.logo-text{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.5px}
+.logo-status{font-family:var(--mono);font-size:10px;color:var(--txt3);margin-top:1px;transition:color .3s}
+.logo-status.ok{color:var(--green)}.logo-status.err{color:var(--red)}
+.h-btn{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rs);padding:6px 12px;font-family:var(--mono);font-size:10px;color:var(--txt2);transition:all .2s var(--ease)}
+.h-btn:active{background:var(--surface2);color:var(--txt);border-color:var(--border3)}
 
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;gap:4px;background:none;color:var(--txt3);font-size:10px;font-weight:600;font-family:'Noto Naskh Arabic',serif;transition:.2s;}
-.nav-btn.active{color:var(--red);}
-.nav-icon{font-size:20px;}
+.tracks{display:flex;gap:6px;background:var(--surface);border-radius:var(--r);padding:3px;border:1px solid var(--border)}
+.track-btn{flex:1;padding:8px 12px;border-radius:9px;font-size:12px;font-weight:600;color:var(--txt3);background:transparent;transition:all .25s var(--ease);display:flex;align-items:center;justify-content:center;gap:6px}
+.track-btn .dot{width:6px;height:6px;border-radius:50%;transition:background .25s}
+.track-btn.sel-a{background:var(--bg);color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.track-btn.sel-a .dot{background:var(--accent)}
+.track-btn.sel-b{background:var(--bg);color:var(--blue);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.track-btn.sel-b .dot{background:var(--blue)}
 
-.page{display:none;flex:1;overflow-y:auto;flex-direction:column;}
-.page.active{display:flex;}
+.page{display:none;flex:1;overflow:hidden;flex-direction:column}.page.active{display:flex}
+.tpl-row{flex-shrink:0;display:flex;gap:6px;padding:12px 18px 4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tpl-row::-webkit-scrollbar{display:none}
+.tpl-chip{white-space:nowrap;padding:7px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--surface);color:var(--txt2);font-size:12px;font-weight:500;transition:all .2s var(--ease);flex-shrink:0}
+.tpl-chip:active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
 
-.quick-row{flex-shrink:0;display:flex;gap:7px;padding:10px 16px 0;overflow-x:auto;}
-.quick-row::-webkit-scrollbar{display:none;}
-.qbtn{white-space:nowrap;padding:8px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--card);color:var(--txt2);font-size:12px;font-family:'Noto Naskh Arabic',serif;font-weight:600;transition:.2s;flex-shrink:0;}
-.qbtn:active{border-color:var(--red);color:var(--red);background:var(--red-dim);}
+.messages{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:16px;-webkit-overflow-scrolling:touch}
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:20px;gap:20px}
+.w-icon{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,var(--accent),#A08642);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-style:italic;font-size:32px;color:#09090B;box-shadow:0 0 40px var(--accent-glow),0 8px 32px rgba(0,0,0,.4)}
+.w-title{font-family:var(--serif);font-size:32px;font-style:italic;line-height:1.2}.w-title span{color:var(--accent)}
+.w-sub{font-size:13px;color:var(--txt2);line-height:1.7;max-width:300px}
+.w-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:340px;margin-top:4px}
+.w-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:14px 12px;text-align:center;transition:all .2s var(--ease)}
+.w-card:active{border-color:var(--accent);background:var(--accent-dim)}
+.w-card-icon{font-size:22px;margin-bottom:6px}.w-card-txt{font-size:11px;color:var(--txt2);font-weight:500;line-height:1.4}
 
-.messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:14px;}
-.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:30px 20px;gap:16px;}
-.welcome-icon{width:72px;height:72px;background:linear-gradient(135deg,var(--red),var(--red2));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 0 40px var(--red-glow);animation:pglow 3s ease-in-out infinite;}
-@keyframes pglow{0%,100%{box-shadow:0 0 30px var(--red-glow)}50%{box-shadow:0 0 60px var(--red-glow)}}
-.welcome-title{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:3px;line-height:1.1;}
-.welcome-sub{font-size:13px;color:var(--txt2);line-height:1.7;max-width:280px;}
-.welcome-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:4px;}
-.wchip{padding:7px 14px;border-radius:20px;border:1px solid var(--border2);font-size:12px;color:var(--txt2);background:var(--card);cursor:pointer;transition:.2s;font-family:'Noto Naskh Arabic',serif;}
-.wchip:active{border-color:var(--red);color:var(--red);background:var(--red-dim);}
+.msg{display:flex;flex-direction:column;gap:3px;animation:msgIn .3s var(--ease)}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg.user{align-items:flex-start}.msg.ai{align-items:stretch}
+.msg-time{font-family:var(--mono);font-size:10px;color:var(--txt3);padding:0 2px}
+.msg.user .msg-body{max-width:85%;padding:10px 16px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r) var(--r) 4px var(--r);font-size:14px;line-height:1.6}
+.msg.ai .msg-body{padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);font-size:14px;line-height:1.65}
 
-.msg{display:flex;flex-direction:column;gap:4px;animation:mIn .25s ease;}
-@keyframes mIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.msg.user{align-items:flex-start;}.msg.ai{align-items:flex-end;}
-.msg-meta{font-size:10px;color:var(--txt3);font-family:'DM Mono',monospace;padding:0 4px;}
-.msg-bubble{max-width:88%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.65;}
-.msg.user .msg-bubble{background:var(--card2);border:1px solid var(--border2);border-bottom-right-radius:4px;}
-.msg.ai .msg-bubble{background:linear-gradient(135deg,#0E0E1A,#12121E);border:1px solid rgba(225,29,72,.2);border-bottom-left-radius:4px;width:100%;max-width:100%;}
+.script-card{background:var(--bg);border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;margin-top:10px}
+.script-block{padding:12px 14px;border-bottom:1px solid var(--border)}.script-block:last-child{border-bottom:none}
+.script-label{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.script-label::before{content:'';width:3px;height:12px;border-radius:2px}
+.sl-hook{color:var(--red)}.sl-hook::before{background:var(--red)}
+.sl-body{color:var(--accent)}.sl-body::before{background:var(--accent)}
+.sl-cta{color:var(--green)}.sl-cta::before{background:var(--green)}
+.sl-bridge{color:var(--blue)}.sl-bridge::before{background:var(--blue)}
+.sl-note{color:var(--txt2)}.sl-note::before{background:var(--txt3)}
+.script-text{font-size:13px;line-height:1.7;color:var(--txt);white-space:pre-wrap;word-break:break-word}
+.ai-text{white-space:pre-wrap;word-break:break-word}.ai-text strong{color:var(--txt);font-weight:600}
+.track-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:6px;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.5px;margin-bottom:10px}
+.tb-a{background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent-mid)}
+.tb-b{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(91,158,245,.2)}
+.msg-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.act-btn{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rs);padding:5px 12px;font-family:var(--mono);font-size:10px;color:var(--txt2);transition:all .2s}
+.act-btn:active{color:var(--green);border-color:var(--green);background:var(--green-dim)}
+.act-btn.save:active{color:var(--accent);border-color:var(--accent);background:var(--accent-dim)}
 
-.script-card{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;overflow:hidden;margin-top:8px;}
-.script-section{padding:10px 14px;border-bottom:1px solid var(--border);}
-.script-section:last-child{border-bottom:none;}
-.slbl{font-size:9px;font-family:'DM Mono',monospace;font-weight:500;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
-.slbl.hook{color:var(--red);}.slbl.body{color:var(--gold);}.slbl.cta{color:var(--green);}.slbl.bridge{color:var(--blue);}.slbl.note{color:var(--txt2);}
-.script-content{font-size:13px;line-height:1.6;color:var(--txt);}
-.tbadge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;margin-bottom:8px;}
-.ba{background:rgba(225,29,72,.15);color:var(--red);border:1px solid rgba(225,29,72,.3);}
-.bb{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.3);}
-.ai-text{white-space:pre-wrap;word-break:break-word;}
-.ai-text strong{color:var(--txt);font-weight:700;}
-.msg-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:8px;}
-.mabtn{background:none;border:1px solid var(--border2);border-radius:8px;padding:5px 12px;font-size:11px;color:var(--txt2);font-family:'DM Mono',monospace;transition:.2s;}
-.mabtn:active{color:var(--green);border-color:var(--green);}
-.mabtn.sv:active{color:var(--gold);border-color:var(--gold);}
-.typing-msg{display:flex;align-items:flex-end;gap:10px;}
-.typing-bubble{background:var(--card);border:1px solid var(--border2);border-radius:16px;border-bottom-left-radius:4px;padding:14px 18px;display:flex;gap:5px;align-items:center;}
-.tdot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:td 1.2s ease-in-out infinite;}
-.tdot:nth-child(2){animation-delay:.2s;}.tdot:nth-child(3){animation-delay:.4s;}
-@keyframes td{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.typing{display:flex;gap:10px;align-items:center;padding:6px 0}
+.typing-dots{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:12px 18px}
+.typing-dots span{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:dotP 1.2s ease-in-out infinite}
+.typing-dots span:nth-child(2){animation-delay:.15s}.typing-dots span:nth-child(3){animation-delay:.3s}
+@keyframes dotP{0%,80%,100%{transform:scale(.5);opacity:.3}40%{transform:scale(1);opacity:1}}
 
-.input-area{flex-shrink:0;padding:12px 14px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:linear-gradient(0deg,var(--bg) 0%,transparent 100%);position:relative;z-index:10;margin-bottom:60px;}
-.input-wrap{display:flex;gap:10px;align-items:flex-end;background:var(--card);border:1.5px solid var(--border2);border-radius:18px;padding:8px 8px 8px 14px;transition:border-color .2s;}
-.input-wrap:focus-within{border-color:rgba(225,29,72,.4);}
-.msg-input{flex:1;background:none;border:none;color:var(--txt);font-size:15px;font-family:'Noto Naskh Arabic',serif;resize:none;max-height:120px;line-height:1.5;padding:4px 0;direction:rtl;}
-.msg-input::placeholder{color:var(--txt3);}
-.send-btn{width:40px;height:40px;min-width:40px;border-radius:12px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:18px;transition:.2s;box-shadow:0 0 12px var(--red-glow);flex-shrink:0;}
-.send-btn:active{transform:scale(.92);}.send-btn:disabled{background:var(--txt3);box-shadow:none;}
+.input-area{flex-shrink:0;padding:10px 18px;padding-bottom:max(10px,var(--safe-b));background:linear-gradient(0deg,var(--bg) 60%,transparent);position:relative;z-index:50;margin-bottom:58px}
+.input-box{display:flex;gap:8px;align-items:flex-end;background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--rl);padding:6px 8px 6px 14px;transition:border-color .2s}
+.input-box:focus-within{border-color:rgba(200,170,110,.35)}
+.input-field{flex:1;background:none;border:none;color:var(--txt);font-size:14px;font-family:var(--font);resize:none;max-height:120px;line-height:1.5;padding:6px 0;direction:rtl}
+.input-field::placeholder{color:var(--txt3)}
+.send-btn{width:38px;height:38px;min-width:38px;border-radius:11px;background:var(--accent);color:#09090B;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;transition:all .2s;flex-shrink:0}
+.send-btn:active{transform:scale(.93)}.send-btn:disabled{background:var(--surface3);color:var(--txt3)}
 
-/* Scripts page */
-.sp{padding:16px 14px;padding-bottom:80px;}
-.sp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.sp-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;}
-.sp-count{font-size:11px;color:var(--txt2);font-family:'DM Mono',monospace;}
-.sp-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:12px;text-align:center;}
-.sp-empty-icon{font-size:48px;opacity:.3;}.sp-empty-txt{font-size:13px;color:var(--txt2);}
-.ss{background:var(--card);border:1px solid var(--border2);border-radius:14px;margin-bottom:10px;overflow:hidden;}
-.ss-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;}
-.ss-hdr:active{background:var(--card2);}
-.ss-left{display:flex;align-items:center;gap:10px;}
-.ss-num{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--red);min-width:36px;}
-.ss-ttl{font-size:13px;font-weight:600;line-height:1.3;}
-.ss-date{font-size:10px;color:var(--txt2);margin-top:2px;font-family:'DM Mono',monospace;}
-.ss-tbadge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;font-family:'DM Mono',monospace;flex-shrink:0;}
-.ss-ta{background:var(--red-dim);color:var(--red);}.ss-tb{background:var(--blue-dim);color:var(--blue);}
-.ss-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border);}
-.ss-body.open{display:block;}
-.ss-content{font-size:13px;line-height:1.6;color:var(--txt2);white-space:pre-wrap;margin-top:10px;}
-.ss-acts{display:flex;gap:6px;margin-top:10px;}
-.ss-btn{background:none;border:1px solid var(--border2);border-radius:8px;padding:5px 10px;font-size:11px;color:var(--txt2);font-family:'DM Mono',monospace;transition:.2s;}
-.ss-btn.e:active{color:var(--gold);border-color:var(--gold);}.ss-btn.d:active{color:var(--red);border-color:var(--red);}
-.ss-edit{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;color:var(--txt);font-size:13px;font-family:'Noto Naskh Arabic',serif;padding:12px;resize:none;min-height:150px;direction:rtl;margin-top:10px;line-height:1.6;}
-.ss-edit:focus{border-color:var(--gold);outline:none;}
-.ss-save-edit{margin-top:8px;padding:10px 20px;background:var(--gold);color:#000;border-radius:10px;font-size:13px;font-weight:700;font-family:'Noto Naskh Arabic',serif;}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:var(--safe-b)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px 6px;gap:2px;background:none;color:var(--txt3);font-size:10px;font-weight:600;transition:color .2s}
+.nav-item .ni{font-size:20px}.nav-item.active{color:var(--accent)}
 
-/* Modal */
-.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:none;align-items:flex-end;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
-.modal-ov.show{display:flex;}
-.modal-box{background:var(--card);border:1px solid var(--border2);border-radius:20px 20px 16px 16px;padding:20px;width:100%;max-width:420px;}
-.modal-title{font-size:15px;font-weight:700;margin-bottom:12px;}
-.modal-inp{width:100%;background:var(--bg2);border:1.5px solid var(--border2);border-radius:10px;color:var(--txt);font-size:14px;font-family:'Noto Naskh Arabic',serif;padding:12px 14px;direction:rtl;margin-bottom:10px;}
-.modal-inp:focus{border-color:var(--gold);outline:none;}
-.modal-btns{display:flex;gap:8px;}
-.modal-ok{flex:1;padding:12px;background:var(--gold);color:#000;border-radius:10px;font-size:14px;font-weight:700;font-family:'Noto Naskh Arabic',serif;}
-.modal-cancel{padding:12px 18px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;font-size:14px;color:var(--txt2);font-family:'Noto Naskh Arabic',serif;}
+.scripts-page{padding:18px;padding-bottom:80px;overflow-y:auto}
+.scripts-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.scripts-title{font-family:var(--serif);font-style:italic;font-size:26px}
+.scripts-count{font-family:var(--mono);font-size:11px;color:var(--txt2)}
+.scripts-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:12px;text-align:center}
+.se-icon{font-size:40px;opacity:.2}.se-txt{font-size:13px;color:var(--txt3);line-height:1.7}
+.s-item{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);margin-bottom:8px;overflow:hidden}
+.s-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer}
+.s-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.s-num{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent);min-width:28px}
+.s-info{min-width:0}
+.s-title-text{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-date{font-family:var(--mono);font-size:10px;color:var(--txt3);margin-top:1px}
+.s-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.s-badge{font-family:var(--mono);font-size:9px;font-weight:600;padding:3px 8px;border-radius:5px}
+.sb-a{background:var(--accent-dim);color:var(--accent)}.sb-b{background:var(--blue-dim);color:var(--blue)}
+.sb-note{background:var(--green-dim);color:var(--green)}
+.s-arrow{color:var(--txt3);font-size:12px}
+.s-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border)}.s-body.open{display:block}
+.s-content{font-size:13px;line-height:1.65;color:var(--txt2);white-space:pre-wrap;margin-top:12px}
+.s-actions{display:flex;gap:6px;margin-top:10px}
+.s-btn{background:none;border:1px solid var(--border2);border-radius:var(--rs);padding:5px 10px;font-family:var(--mono);font-size:10px;color:var(--txt2);transition:all .2s}
+.s-btn:active{color:var(--txt);border-color:var(--border3)}
+.s-edit-area{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:var(--r);color:var(--txt);font-size:13px;font-family:var(--font);padding:12px;resize:none;min-height:160px;direction:rtl;line-height:1.65;margin-top:10px}
+.s-edit-area:focus{border-color:var(--accent)}
+.s-edit-actions{display:flex;gap:8px;margin-top:8px}
+.s-save-btn{padding:8px 20px;background:var(--accent);color:#09090B;border-radius:var(--rs);font-size:12px;font-weight:700}
+.s-cancel-btn{padding:8px 16px;background:var(--surface2);color:var(--txt2);border-radius:var(--rs);font-size:12px}
+.add-note-btn{background:var(--accent);color:#09090B;border-radius:var(--rs);padding:6px 14px;font-family:var(--mono);font-size:11px;font-weight:600;transition:all .2s}
+.add-note-btn:active{opacity:.8;transform:scale(.96)}
 
-/* Toast */
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-60px);background:var(--card);border:1px solid var(--green);border-radius:20px;padding:8px 18px;font-size:13px;color:var(--green);z-index:300;transition:transform .3s cubic-bezier(.34,1.56,.64,1);font-family:'DM Mono',monospace;white-space:nowrap;}
-.toast.show{transform:translateX(-50%) translateY(0);}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:200;display:none;align-items:flex-end;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--rl) var(--rl) var(--r) var(--r);padding:22px 20px;width:100%;max-width:400px;animation:modalIn .3s var(--ease)}
+@keyframes modalIn{from{transform:translateY(20px);opacity:0}}
+.modal-head{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.modal-input{width:100%;background:var(--bg);border:1.5px solid var(--border2);border-radius:var(--r);color:var(--txt);font-size:14px;font-family:var(--font);padding:12px 14px;direction:rtl;margin-bottom:14px;transition:border-color .2s}
+.modal-input:focus{border-color:var(--accent)}
+.modal-btns{display:flex;gap:8px}
+.modal-save{flex:1;padding:12px;background:var(--accent);color:#09090B;border-radius:var(--r);font-size:14px;font-weight:700}
+.modal-save:active{opacity:.8}
+.modal-cancel{padding:12px 18px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--r);color:var(--txt2);font-size:14px}
+
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-60px);background:var(--surface);border:1px solid var(--green);border-radius:20px;padding:8px 18px;font-family:var(--mono);font-size:12px;color:var(--green);z-index:300;transition:transform .4s var(--ease);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.word-count{font-family:var(--mono);font-size:9px;color:var(--txt3);margin-top:6px;text-align:left;direction:ltr}
 </style>
 </head>
 <body>
 
 <div class="toast" id="toast"></div>
 
-<div class="modal-ov" id="saveModal">
-  <div class="modal-box">
-    <div class="modal-title">💾 احفظ السكربت</div>
-    <input class="modal-inp" id="saveTitle" placeholder="اسم السكربت (مثال: روتين الصباح POV)">
+<!-- Save Modal -->
+<div class="modal-overlay" id="saveModal">
+  <div class="modal">
+    <div class="modal-head">💾 حفظ السكربت</div>
+    <div id="splitInfo" style="display:none;margin-bottom:12px;padding:10px 12px;background:var(--accent-dim);border:1px solid var(--accent-mid);border-radius:8px;font-size:12px;color:var(--accent);line-height:1.5"></div>
+    <input class="modal-input" id="saveTitle" placeholder="اسم السكربت...">
     <div class="modal-btns">
       <button class="modal-cancel" onclick="closeSaveModal()">إلغاء</button>
-      <button class="modal-ok" onclick="confirmSave()">حفظ ✓</button>
+      <button class="modal-save" onclick="confirmSave()">حفظ</button>
+    </div>
+    <div id="splitBtns" style="display:none;margin-top:8px">
+      <button style="width:100%;padding:12px;background:var(--surface2);border:1px solid var(--accent-mid);border-radius:var(--r);font-size:13px;font-weight:600;color:var(--accent);font-family:var(--font);cursor:pointer" onclick="confirmSaveSplit()">⚡ قسّم واحفظ كل فكرة لحالها</button>
     </div>
   </div>
 </div>
 
-<div class="hdr">
-  <div class="hdr-top">
-    <div class="brand">
-      <div class="brand-icon">✦</div>
+<!-- Note Modal -->
+<div class="modal-overlay" id="noteModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-head">📝 ملاحظة جديدة</div>
+    <input class="modal-input" id="noteTitle" placeholder="العنوان...">
+    <textarea id="noteBody" placeholder="اكتب ملاحظتك هون..." style="width:100%;min-height:160px;background:var(--bg);border:1.5px solid var(--border2);border-radius:var(--r);color:var(--txt);font-size:14px;font-family:var(--font);padding:12px 14px;direction:rtl;resize:none;line-height:1.65;margin-bottom:14px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''"></textarea>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeNoteModal()">إلغاء</button>
+      <button class="modal-save" onclick="confirmNote()">حفظ 📝</button>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-row">
+    <div class="logo">
+      <div class="logo-mark">R</div>
       <div>
-        <div class="brand-name">CONTENT MASTER</div>
-        <div class="brand-sub" id="fbStatus">جاري الاتصال...</div>
+        <div class="logo-text">ROMMEL STUDIO</div>
+        <div class="logo-status" id="fbStatus">جاري الاتصال...</div>
       </div>
     </div>
-    <button class="hdr-btn" onclick="clearChat()">مسح ↺</button>
+    <button class="h-btn" onclick="clearChat()">مسح ↺</button>
   </div>
-  <div class="track-row">
-    <button class="track-btn act-a" id="btnA" onclick="setTrack('A')">
-      <div class="track-dot" style="background:var(--red)"></div>Personal Brand
-    </button>
-    <button class="track-btn" id="btnB" onclick="setTrack('B')">
-      <div class="track-dot" style="background:var(--blue)"></div>The Matrix
-    </button>
+  <div class="tracks">
+    <button class="track-btn sel-a" id="btnA" onclick="setTrack('A')"><span class="dot"></span>Personal Brand</button>
+    <button class="track-btn" id="btnB" onclick="setTrack('B')"><span class="dot"></span>The Matrix</button>
   </div>
 </div>
 
+<!-- Chat Page -->
 <div class="page active" id="pageChat" style="flex-direction:column;">
-  <div class="quick-row" id="quickRow"></div>
+  <div class="tpl-row" id="tplRow"></div>
   <div class="messages" id="messages">
     <div class="welcome" id="welcomeScreen">
-      <div class="welcome-icon">✦</div>
-      <div><div class="welcome-title">مرحباً<br><span style="color:var(--red)">رومل</span></div></div>
-      <div class="welcome-sub" id="welcomeSub">مسار البراند الشخصي 🔴<br>نبني حضورك وقصتك</div>
-      <div class="welcome-chips" id="welcomeChips"></div>
+      <div class="w-icon">R</div>
+      <div><div class="w-title">مرحباً، <span>رومل</span></div></div>
+      <div class="w-sub" id="wSub">كوبي رايتر وكاتب سكربتات<br>مخصص للبراند الشخصي</div>
+      <div class="w-grid" id="wGrid"></div>
     </div>
   </div>
   <div class="input-area">
-    <div class="input-wrap">
-      <textarea class="msg-input" id="msgInput" placeholder="اسألني أي شي..." rows="1"
-        oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+    <div class="input-box">
+      <textarea class="input-field" id="msgInput" placeholder="اكتب طلبك..." rows="1" oninput="autoGrow(this)" onkeydown="handleKey(event)"></textarea>
       <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
     </div>
   </div>
 </div>
 
+<!-- Scripts Page -->
 <div class="page" id="pageScripts">
-  <div class="sp" id="scriptsContainer"></div>
+  <div class="scripts-page" id="scriptsContainer"></div>
 </div>
 
+<!-- Bottom Nav -->
 <div class="bottom-nav">
-  <button class="nav-btn active" id="navChat" onclick="setPage('chat',this)">
-    <span class="nav-icon">💬</span><span>المحادثة</span>
-  </button>
-  <button class="nav-btn" id="navScripts" onclick="setPage('scripts',this)">
-    <span class="nav-icon">📁</span><span id="navScriptsLbl">السكربتات</span>
-  </button>
+  <button class="nav-item active" id="navChat" onclick="switchPage('chat',this)"><span class="ni">✦</span><span>الاستوديو</span></button>
+  <button class="nav-item" id="navScripts" onclick="switchPage('scripts',this)"><span class="ni">◈</span><span id="navScriptsLbl">المحفوظات</span></button>
 </div>
 
+<!-- Firebase Module -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, updateDoc, orderBy, query }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
-const fb = initializeApp({
-  apiKey:"AIzaSyANM1I9oQTbvMsN8Htmtx2gD0H_qn5ENIY",
-  authDomain:"content-master-d8587.firebaseapp.com",
-  projectId:"content-master-d8587",
-  storageBucket:"content-master-d8587.firebasestorage.app",
-  messagingSenderId:"460395104635",
-  appId:"1:460395104635:web:041af312db2aaafb50d5de"
-});
-const db = getFirestore(fb);
-window._db = db;
-window._col = collection(db,'scripts');
-window._doc = (id) => doc(db,'scripts',id);
-window._q   = () => query(collection(db,'scripts'), orderBy('createdAt','desc'));
-window._setDoc = setDoc;
-window._getDocs = getDocs;
-window._deleteDoc = deleteDoc;
-window._updateDoc = updateDoc;
-
 try {
-  await window.loadScripts();
-  document.getElementById('fbStatus').textContent = '● متصل';
-  document.getElementById('fbStatus').classList.add('fb-ok');
+  const fb = initializeApp({
+    apiKey:"AIzaSyANM1I9oQTbvMsN8Htmtx2gD0H_qn5ENIY",
+    authDomain:"content-master-d8587.firebaseapp.com",
+    projectId:"content-master-d8587",
+    storageBucket:"content-master-d8587.firebasestorage.app",
+    messagingSenderId:"460395104635",
+    appId:"1:460395104635:web:041af312db2aaafb50d5de"
+  });
+  const db = getFirestore(fb);
+  window._db = db;
+  window._doc = (id) => doc(db,'scripts',id);
+  window._q = () => query(collection(db,'scripts'), orderBy('createdAt','desc'));
+  window._setDoc = setDoc;
+  window._getDocs = getDocs;
+  window._deleteDoc = deleteDoc;
+  window._updateDoc = updateDoc;
+  window._firebaseReady = true;
 } catch(e) {
-  document.getElementById('fbStatus').textContent = '● خطأ بالاتصال';
+  console.error('Firebase init:', e);
+  window._firebaseReady = false;
 }
+function boot() {
+  if (typeof window.loadScripts === 'function') {
+    window.loadScripts().then(() => {
+      document.getElementById('fbStatus').textContent = '● متصل';
+      document.getElementById('fbStatus').classList.add('ok');
+    }).catch(() => {
+      document.getElementById('fbStatus').textContent = '● خطأ';
+      document.getElementById('fbStatus').classList.add('err');
+    });
+  } else { setTimeout(boot, 50); }
+}
+boot();
 </script>
 
+<!-- Main App -->
 <script>
-const SYS_A = `أنت "Content Master" مساعد رومل لمسار Personal Brand فقط.
+/* ========== SYSTEM PROMPTS ========== */
+const SYS_A = `أنت كوبي رايتر محترف ومتخصص بكتابة سكربتات الفيديو لمسار Personal Brand.
 
-رومل: طالب إدارة أعمال أردني مسيحي، يبني Personal Brand عن "بناء الشباب بالعشرينات".
-
+العميل: رومل — طالب إدارة أعمال أردني مسيحي، يبني Personal Brand عن "بناء الشباب بالعشرينات".
 هذا المسار لا علاقة له بالتداول أو الأسواق المالية إطلاقاً.
-المحتوى فقط عن: الروتين اليومي، الانضباط، بناء العادات، POV الجامعة، قصص شخصية حقيقية، النمو الشخصي.
 
+مجالات المحتوى: الروتين اليومي، الانضباط، بناء العادات، POV الجامعة، قصص شخصية حقيقية، النمو الشخصي، تنظيم الوقت، القراءة، الصحة.
 الجمهور: شباب عرب 18-26.
-النبرة: ملهمة، واقعية، صادقة — مش motivational speaker مزيف.
+النبرة: ملهمة، واقعية، صادقة — مش motivational speaker مزيف. زي صاحبك اللي أكبر منك بسنتين.
 المنصات: TikTok / Reels / YouTube Shorts.
 أيام التصوير: الخميس والجمعة فقط.
 
 هيكل السكربت الإلزامي:
-HOOK: (3-5 ثواني — سؤال أو POV أو statement صادمة)
-BODY: (نقاط مرقّمة قابلة للتحدث عنها)
-CTA: (فعل واحد واضح)
-FILMING NOTE: (تعليمات التصوير السريع)
+HOOK: (3-5 ثواني — سؤال أو POV أو statement صادمة — هاد أهم جزء)
+BODY: (نقاط واضحة قابلة للتحدث عنها بطبيعية)
+CTA: (فعل واحد واضح وبسيط)
+FILMING NOTE: (تعليمات تصوير مختصرة: الزاوية، المكان، الإضاءة، الـ vibe)
 
-ردودك: مباشرة، بالعربية الشامية، بدون مقدمات.`;
+قواعدك:
+- مباشر، بدون مقدمات أو كلام فاضي
+- بالعربية الشامية الطبيعية (مش فصحى)
+- كل سكربت لازم يكون قابل للتصوير فوراً
+- ركّز على الـ Hook — إذا الـ Hook ضعيف، كل السكربت فاشل
+- لما يطلب أفكار، أعطي أفكار جريئة مش مكررة
+- لما يطلب خطة محتوى، نظّمها بجدول واضح بالأيام`;
 
-const SYS_B = `أنت "Content Master" مساعد رومل لمسار The Matrix فقط.
+const SYS_B = `أنت كوبي رايتر محترف ومتخصص بكتابة سكربتات الفيديو لمسار The Matrix (مجتمع تداول).
 
-رومل: يدير مجتمع تداول "The Matrix" على ديسكورد، يتداول كريبتو وفوركس بمنهجية ICT/AMD.
-
+العميل: رومل — يدير مجتمع تداول "The Matrix" على ديسكورد، يتداول كريبتو وفوركس بمنهجية ICT/AMD.
 هذا المسار متخصص بالتداول فقط — لا علاقة له بالحياة الشخصية أو الجامعة.
-المحتوى فقط عن: ICT/AMD، Fair Value Gaps، Order Blocks، صفقات live، نتائج موثّقة.
 
+مجالات المحتوى: ICT/AMD، Fair Value Gaps، Order Blocks، صفقات live، نتائج موثّقة، تحليلات السوق، تعليم المبتدئين.
 الجمهور: متداولون مبتدئون ومتوسطون، عرب وأجانب.
-النبرة: تقنية، احترافية، مبنية على الدليل.
+النبرة: تقنية، احترافية، مبنية على الدليل — مش guru بيوعد بالملايين.
 المنصات: YouTube / TikTok / Discord.
-اكتب بالعربي والإنجليزي.
+اكتب بالعربي والإنجليزي حسب الطلب.
 أيام التصوير: الخميس والجمعة فقط.
 
 هيكل السكربت الإلزامي:
-HOOK: (3-5 ثواني تخطف المتداول)
-BODY: (شرح تقني واضح بأمثلة)
-CTA: (انضم للسيرفر / اشترك)
-FILMING NOTE: (تعليمات التصوير السريع)
+HOOK: (3-5 ثواني تخطف المتداول — رقم حقيقي أو سؤال تقني)
+BODY: (شرح تقني واضح بأمثلة حقيقية)
+CTA: (انضم للسيرفر / اشترك / فعّل التنبيهات)
+FILMING NOTE: (تعليمات تصوير: شاشة التداول، face cam، إلخ)
 
-ردودك: مباشرة، تقنية، مع أمثلة حقيقية.`;
+قواعدك:
+- مباشر وتقني
+- أمثلة حقيقية من السوق
+- بدون وعود أو hype مزيفة
+- كل سكربت لازم يكون تعليمي وقابل للتصوير`;
 
-const QA=[{l:'✍️ سكربت',m:'اكتب سكربت فيديو كامل'},{l:'🔥 أفكار فيروسية',m:'أعطني 5 أفكار فيروسية للبراند الشخصي'},{l:'⚡ Hook',m:'اكتب Hook جذاب'},{l:'📅 خطة شهرية',m:'خطة محتوى للشهر الجاي'},{l:'🎬 جدول التصوير',m:'وزع فيديوهات البراند على الخميس والجمعة'}];
-const QB=[{l:'✍️ سكربت',m:'اكتب سكربت فيديو تداول كامل'},{l:'📈 شرح FVG',m:'اشرح Fair Value Gap بطريقة بقدر أصوّرها'},{l:'🔥 أفكار',m:'أعطني 5 أفكار فيروسية للمتداولين'},{l:'⚡ Hook',m:'اكتب Hook جذاب لفيديو تداول'},{l:'📅 خطة شهرية',m:'خطة محتوى The Matrix للشهر الجاي'}];
-const CA=[{l:'روتين الصباح POV',m:'اكتب سكربت فيديو عن روتين الصباح من منظور طالب جامعي'},{l:'انضباط بالعشرينات',m:'سكربت عن الانضباط وبناء العادات'},{l:'يوم في حياتي',m:'سكربت Day in my life كطالب جامعي منتج'},{l:'خطة شهرية',m:'خطة محتوى البراند الشخصي للشهر الجاي'}];
-const CB=[{l:'شرح FVG',m:'اشرح Fair Value Gap بطريقة بقدر أصوّرها فيديو'},{l:'صفقة لايف',m:'سكربت فيديو صفقة live بمنهجية ICT'},{l:'AMD Cycle',m:'اشرح AMD Cycle للمبتدئين'},{l:'خطة شهرية',m:'خطة محتوى The Matrix للشهر الجاي'}];
+/* ========== TEMPLATES ========== */
+const TPA=[
+  {l:'✍️ سكربت',m:'اكتب سكربت فيديو كامل عن موضوع يناسب البراند الشخصي'},
+  {l:'🔥 أفكار',m:'أعطني 5 أفكار فيديوهات فيروسية للبراند الشخصي مع hooks'},
+  {l:'⚡ Hooks',m:'اكتبلي 10 hooks قوية ومتنوعة لفيديوهات البراند الشخصي'},
+  {l:'📅 خطة شهرية',m:'خطة محتوى 12 فيديو للشهر الجاي (تصوير الخميس والجمعة)'},
+  {l:'🎬 جدول تصوير',m:'نظّم 6 فيديوهات أصوّرهم يوم الخميس والجمعة الجاي'},
+  {l:'📝 كابشن',m:'اكتب كابشن قوي لفيديو عن الانضباط اليومي'},
+];
+const TPB=[
+  {l:'✍️ سكربت',m:'اكتب سكربت فيديو تداول كامل'},
+  {l:'📈 شرح FVG',m:'اشرح Fair Value Gap بطريقة بقدر أصوّرها فيديو قصير'},
+  {l:'🔥 أفكار',m:'أعطني 5 أفكار فيديوهات فيروسية للمتداولين مع hooks'},
+  {l:'⚡ Hooks',m:'اكتبلي 10 hooks تجذب المتداولين'},
+  {l:'📅 خطة شهرية',m:'خطة محتوى The Matrix 12 فيديو للشهر الجاي'},
+  {l:'💰 صفقة لايف',m:'سكربت فيديو صفقة live بمنهجية ICT'},
+];
+const WCA=[
+  {icon:'✍️',txt:'سكربت فيديو كامل',m:'اكتب سكربت فيديو عن روتين الصباح POV طالب جامعي'},
+  {icon:'🔥',txt:'10 أفكار فيروسية',m:'أعطني 10 أفكار فيديوهات فيروسية مع hooks'},
+  {icon:'📅',txt:'خطة محتوى شهرية',m:'خطة محتوى 12 فيديو للشهر الجاي'},
+  {icon:'⚡',txt:'تحسين Hook',m:'عندي فيديو عن الصحيان بكير، حسّنلي الـ Hook'},
+];
+const WCB=[
+  {icon:'✍️',txt:'سكربت فيديو تداول',m:'اكتب سكربت فيديو عن AMD Cycle للمبتدئين'},
+  {icon:'📈',txt:'شرح مفهوم تداول',m:'اشرح Fair Value Gap بفيديو قصير'},
+  {icon:'📅',txt:'خطة محتوى شهرية',m:'خطة محتوى The Matrix 12 فيديو للشهر'},
+  {icon:'💰',txt:'سكربت صفقة لايف',m:'سكربت فيديو صفقة live بمنهجية ICT'},
+];
 
+/* ========== STATE ========== */
 let track='A', history=[], isLoading=false;
 let savedScripts=[], pendingSave='', expanded=new Set(), editing=null, activePage='chat';
+let aiResponses=[];
+let detectedParts=null;
 
+/* ========== TRACK ========== */
 function setTrack(t){
   track=t;
-  document.getElementById('btnA').className='track-btn'+(t==='A'?' act-a':'');
-  document.getElementById('btnB').className='track-btn'+(t==='B'?' act-b':'');
-  history=[];
-  renderQuick();
+  document.getElementById('btnA').className='track-btn'+(t==='A'?' sel-a':'');
+  document.getElementById('btnB').className='track-btn'+(t==='B'?' sel-b':'');
+  history=[];renderTemplates();
   const ws=document.getElementById('welcomeScreen');
   if(ws){
-    document.getElementById('welcomeSub').textContent=t==='A'?'مسار البراند الشخصي 🔴\nنبني حضورك وقصتك':'مسار The Matrix 🔵\nنبني محتوى التداول الاحترافي';
-    renderChips();
+    document.getElementById('wSub').innerHTML=t==='A'
+      ?'كوبي رايتر وكاتب سكربتات<br>مخصص للبراند الشخصي'
+      :'كوبي رايتر وكاتب سكربتات<br>مخصص لمحتوى التداول';
+    renderWelcomeCards();
   }
 }
-function renderQuick(){
-  const list=track==='A'?QA:QB;
-  document.getElementById('quickRow').innerHTML=list.map(q=>`<button class="qbtn" onclick="quickSend('${q.m}')">${q.l}</button>`).join('');
+function renderTemplates(){
+  const list=track==='A'?TPA:TPB;
+  document.getElementById('tplRow').innerHTML=list.map(t=>
+    `<button class="tpl-chip" onclick="quickSend('${t.m}')">${t.l}</button>`
+  ).join('');
 }
-function renderChips(){
-  const list=track==='A'?CA:CB;
-  const el=document.getElementById('welcomeChips');
-  if(el)el.innerHTML=list.map(c=>`<div class="wchip" onclick="quickSend('${c.m}')">${c.l}</div>`).join('');
+function renderWelcomeCards(){
+  const list=track==='A'?WCA:WCB;
+  document.getElementById('wGrid').innerHTML=list.map(c=>
+    `<div class="w-card" onclick="quickSend('${c.m}')"><div class="w-card-icon">${c.icon}</div><div class="w-card-txt">${c.txt}</div></div>`
+  ).join('');
 }
-function setPage(name,btn){
+
+/* ========== NAVIGATION ========== */
+function switchPage(name,btn){
   activePage=name;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
   document.getElementById(name==='chat'?'pageChat':'pageScripts').classList.add('active');
   btn.classList.add('active');
   if(name==='scripts')renderScripts();
 }
 function quickSend(text){
   document.getElementById('msgInput').value=text;
-  if(activePage!=='chat')setPage('chat',document.getElementById('navChat'));
+  if(activePage!=='chat')switchPage('chat',document.getElementById('navChat'));
   sendMessage();
 }
 function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function autoGrow(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
 
+/* ========== CHAT ========== */
 async function sendMessage(){
   const input=document.getElementById('msgInput');
   const text=input.value.trim();
@@ -338,17 +427,24 @@ async function sendMessage(){
   input.value='';input.style.height='auto';
   isLoading=true;
   document.getElementById('sendBtn').disabled=true;
-  const te=showTyping();
+  const typing=showTyping();
   try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history,system:track==='A'?SYS_A:SYS_B})});
-    if(!r.ok)throw new Error(r.status);
+    const r=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:history,system:track==='A'?SYS_A:SYS_B})
+    });
+    if(!r.ok)throw new Error('HTTP '+r.status);
     const d=await r.json();
-    if(d.error)throw new Error(d.error.message||d.error);
+    if(d.error)throw new Error(d.error.message||JSON.stringify(d.error));
     const reply=d.content?.[0]?.text||'ما في رد.';
-    te.remove();
+    typing.remove();
     history.push({role:'assistant',content:reply});
     addMsg('ai',reply);
-  }catch(e){te.remove();addMsg('ai','⚠️ خطأ: '+e.message);}
+  }catch(e){
+    typing.remove();
+    addMsg('ai','⚠️ خطأ: '+e.message);
+  }
   isLoading=false;
   document.getElementById('sendBtn').disabled=false;
 }
@@ -359,51 +455,122 @@ function addMsg(role,text){
   div.className=`msg ${role}`;
   const t=new Date();
   const time=`${t.getHours().toString().padStart(2,'0')}:${t.getMinutes().toString().padStart(2,'0')}`;
-  const isScript=/HOOK|BODY|CTA|FILMING/i.test(text);
   if(role==='user'){
-    div.innerHTML=`<div class="msg-meta">${time}</div><div class="msg-bubble">${esc(text)}</div>`;
+    div.innerHTML=`<div class="msg-time">${time}</div><div class="msg-body">${esc(text)}</div>`;
   }else{
+    const idx=aiResponses.length;
+    aiResponses.push(text);
     const rendered=renderAI(text);
-    const safe=text.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
-    div.innerHTML=`<div class="msg-bubble">${rendered}
-      <div class="msg-actions">
-        <button class="mabtn" onclick="copyTxt(this,\`${safe}\`)">نسخ ↗</button>
-        ${isScript?`<button class="mabtn sv" onclick="openSave(\`${safe}\`)">💾 احفظ</button>`:''}
-      </div>
-    </div><div class="msg-meta">${time}</div>`;
+    const words=text.split(/\s+/).length;
+    const chars=text.length;
+    div.innerHTML=`<div class="msg-body">${rendered}<div class="word-count">${words} words · ${chars} chars</div><div class="msg-actions"><button class="act-btn" onclick="copyAI(this,${idx})">نسخ</button><button class="act-btn save" onclick="openSave(${idx})">💾 حفظ</button></div></div><div class="msg-time">${time}</div>`;
   }
   c.appendChild(div);
   c.scrollTop=c.scrollHeight;
 }
+
+function copyAI(btn,idx){
+  navigator.clipboard.writeText(aiResponses[idx]).then(()=>{
+    btn.textContent='✓ تم';setTimeout(()=>btn.textContent='نسخ',2000);
+  });
+}
+
 function renderAI(text){
   const isScript=/HOOK|BODY|CTA|BRIDGE|FILMING/i.test(text);
-  const badge=track==='A'?'<div class="tbadge ba">✦ PERSONAL BRAND</div>':'<div class="tbadge bb">◈ THE MATRIX</div>';
-  if(isScript)return badge+renderScript(text);
+  const badge=track==='A'
+    ?'<div class="track-badge tb-a">PERSONAL BRAND</div>'
+    :'<div class="track-badge tb-b">THE MATRIX</div>';
+  if(isScript)return badge+buildScriptCard(text);
   return badge+`<div class="ai-text">${fmt(text)}</div>`;
 }
-function renderScript(text){
-  const secs=[{k:/HOOK[:\s]+/i,l:'⚡ HOOK',c:'hook'},{k:/BODY[:\s]+/i,l:'📖 BODY',c:'body'},{k:/CTA[:\s]+/i,l:'🎯 CTA',c:'cta'},{k:/BRIDGE[:\s]+/i,l:'🔗 BRIDGE',c:'bridge'},{k:/FILMING[:\s]+/i,l:'🎬 FILMING',c:'note'}];
-  const m=secs.map(s=>({...s,pos:text.search(s.k)})).filter(s=>s.pos>=0).sort((a,b)=>a.pos-b.pos);
-  if(!m.length)return`<div class="ai-text">${fmt(text)}</div>`;
-  const intro=text.substring(0,m[0].pos).trim();
+
+function buildScriptCard(text){
+  const secs=[
+    {k:/HOOK[:\s]+/i,l:'HOOK',c:'sl-hook'},
+    {k:/BODY[:\s]+/i,l:'BODY',c:'sl-body'},
+    {k:/CTA[:\s]+/i,l:'CTA',c:'sl-cta'},
+    {k:/BRIDGE[:\s]+/i,l:'BRIDGE',c:'sl-bridge'},
+    {k:/FILMING[\s]*NOTE[:\s]*/i,l:'FILMING NOTE',c:'sl-note'},
+  ];
+  const found=secs.map(s=>({...s,pos:text.search(s.k)})).filter(s=>s.pos>=0).sort((a,b)=>a.pos-b.pos);
+  if(!found.length)return`<div class="ai-text">${fmt(text)}</div>`;
+  const intro=text.substring(0,found[0].pos).trim();
   let html=intro?`<div class="ai-text" style="margin-bottom:10px">${fmt(intro)}</div>`:'';
   html+='<div class="script-card">';
-  m.forEach((s,i)=>{
-    const end=i<m.length-1?m[i+1].pos:text.length;
+  found.forEach((s,i)=>{
+    const end=i<found.length-1?found[i+1].pos:text.length;
     const content=text.substring(s.pos,end).replace(s.k,'').trim();
-    html+=`<div class="script-section"><div class="slbl ${s.c}">${s.l}</div><div class="script-content">${fmt(content)}</div></div>`;
+    html+=`<div class="script-block"><div class="script-label ${s.c}">${s.l}</div><div class="script-text">${fmt(content)}</div></div>`;
   });
-  html+='</div>';return html;
+  html+='</div>';
+  return html;
 }
+
 function fmt(t){return esc(t).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');}
 function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function showTyping(){const c=document.getElementById('messages');const d=document.createElement('div');d.className='typing-msg';d.innerHTML='<div class="typing-bubble"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;return d;}
-function copyTxt(btn,text){navigator.clipboard.writeText(text).then(()=>{btn.textContent='تم ✓';setTimeout(()=>btn.textContent='نسخ ↗',2000);});}
-function clearChat(){history=[];const m=document.getElementById('messages');m.innerHTML=`<div class="welcome" id="welcomeScreen"><div class="welcome-icon">✦</div><div><div class="welcome-title">مرحباً<br><span style="color:var(--red)">رومل</span></div></div><div class="welcome-sub" id="welcomeSub">${track==='A'?'مسار البراند الشخصي 🔴<br>نبني حضورك وقصتك':'مسار The Matrix 🔵<br>نبني محتوى التداول الاحترافي'}</div><div class="welcome-chips" id="welcomeChips"></div></div>`;renderChips();}
+function showTyping(){const c=document.getElementById('messages');const d=document.createElement('div');d.className='typing';d.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;return d;}
+function copyTxt(btn,text){navigator.clipboard.writeText(text).then(()=>{btn.textContent='✓ تم';setTimeout(()=>btn.textContent='نسخ',2000);});}
+function copySaved(btn,id){const s=savedScripts.find(x=>x.id===id);if(s)navigator.clipboard.writeText(s.content).then(()=>{btn.textContent='✓ تم';setTimeout(()=>btn.textContent='نسخ',2000);});}
 
-/* Save */
-function openSave(content){pendingSave=content;document.getElementById('saveTitle').value='';document.getElementById('saveModal').classList.add('show');setTimeout(()=>document.getElementById('saveTitle').focus(),100);}
-function closeSaveModal(){document.getElementById('saveModal').classList.remove('show');pendingSave='';}
+function clearChat(){
+  history=[];aiResponses=[];
+  const m=document.getElementById('messages');
+  m.innerHTML=`<div class="welcome" id="welcomeScreen"><div class="w-icon">R</div><div><div class="w-title">مرحباً، <span>رومل</span></div></div><div class="w-sub" id="wSub">${track==='A'?'كوبي رايتر وكاتب سكربتات<br>مخصص للبراند الشخصي':'كوبي رايتر وكاتب سكربتات<br>مخصص لمحتوى التداول'}</div><div class="w-grid" id="wGrid"></div></div>`;
+  renderWelcomeCards();
+}
+
+/* ========== SAVE MODAL (with split detection) ========== */
+function splitIdeas(text){
+  const patterns=[
+    /(?:^|\n)\s*(?:\*\*)?(\d+)[.)]\s*\*?\*?/g,
+    /(?:^|\n)\s*(?:فكرة|فيديو|سكربت|idea|video)\s*(?:#)?(\d+)[:\s.\-—]/gi,
+  ];
+  let positions=[];
+  for(const pat of patterns){
+    let m;while((m=pat.exec(text))!==null){positions.push({idx:m.index,num:parseInt(m[1])});}
+    if(positions.length>=2)break;positions=[];
+  }
+  if(positions.length<2)return null;
+  positions.sort((a,b)=>a.idx-b.idx);
+  const parts=[];
+  for(let i=0;i<positions.length;i++){
+    const start=positions[i].idx;
+    const end=i<positions.length-1?positions[i+1].idx:text.length;
+    const chunk=text.substring(start,end).trim();
+    if(chunk.length>15){
+      const firstLine=chunk.split('\n')[0].replace(/^[\s\d.*#)(\-—:]+/,'').replace(/\*\*/g,'').trim();
+      const title=firstLine.length>50?firstLine.substring(0,50)+'...':firstLine;
+      parts.push({title,content:chunk});
+    }
+  }
+  return parts.length>=2?parts:null;
+}
+
+function openSave(idx){
+  pendingSave=aiResponses[idx];
+  if(!pendingSave)return;
+  document.getElementById('saveTitle').value='';
+  document.getElementById('saveTitle').style.borderColor='';
+  detectedParts=splitIdeas(pendingSave);
+  const splitInfo=document.getElementById('splitInfo');
+  const splitBtns=document.getElementById('splitBtns');
+  if(detectedParts){
+    splitInfo.style.display='block';
+    splitInfo.textContent=`🔍 لقيت ${detectedParts.length} أفكار/فيديوهات — بتقدر تحفظهم ككتلة وحدة أو تقسّمهم`;
+    splitBtns.style.display='block';
+  }else{
+    splitInfo.style.display='none';
+    splitBtns.style.display='none';
+  }
+  document.getElementById('saveModal').classList.add('show');
+  setTimeout(()=>document.getElementById('saveTitle').focus(),100);
+}
+
+function closeSaveModal(){
+  document.getElementById('saveModal').classList.remove('show');
+  pendingSave='';detectedParts=null;
+}
+
 async function confirmSave(){
   const title=document.getElementById('saveTitle').value.trim();
   if(!title){document.getElementById('saveTitle').style.borderColor='var(--red)';return;}
@@ -412,86 +579,130 @@ async function confirmSave(){
   showToast('✓ تم الحفظ');
 }
 
-/* Firebase */
+async function confirmSaveSplit(){
+  if(!detectedParts)return;
+  const baseTitle=document.getElementById('saveTitle').value.trim();
+  closeSaveModal();
+  let count=0;
+  for(let i=0;i<detectedParts.length;i++){
+    const p=detectedParts[i];
+    const title=baseTitle?`${baseTitle} — ${i+1}. ${p.title}`:`${i+1}. ${p.title}`;
+    await addScript(title,p.content,track);
+    count++;
+    await new Promise(r=>setTimeout(r,50));
+  }
+  showToast(`✓ تم حفظ ${count} سكربتات`);
+  detectedParts=null;
+}
+
+/* ========== NOTE MODAL ========== */
+function openNoteModal(){
+  document.getElementById('noteTitle').value='';
+  document.getElementById('noteBody').value='';
+  document.getElementById('noteModal').classList.add('show');
+  setTimeout(()=>document.getElementById('noteTitle').focus(),100);
+}
+function closeNoteModal(){
+  document.getElementById('noteModal').classList.remove('show');
+}
+async function confirmNote(){
+  const title=document.getElementById('noteTitle').value.trim();
+  const body=document.getElementById('noteBody').value.trim();
+  if(!title){document.getElementById('noteTitle').style.borderColor='var(--red)';return;}
+  if(!body){document.getElementById('noteBody').style.borderColor='var(--red)';return;}
+  closeNoteModal();
+  await addScript(title,body,'NOTE');
+  showToast('📝 تم حفظ الملاحظة');
+}
+
+/* ========== FIREBASE CRUD ========== */
 window.loadScripts=async function(){
-  if(!window._getDocs)return;
+  if(!window._getDocs||!window._firebaseReady)return;
   const snap=await window._getDocs(window._q());
   savedScripts=[];
   snap.forEach(d=>savedScripts.push({id:d.id,...d.data()}));
   updateBadge();
 };
+
 async function addScript(title,content,tr){
-  if(!window._db)return;
-  const id='s'+Date.now();
-  const data={title,content,track:tr,createdAt:Date.now(),date:new Date().toLocaleDateString('ar-SA')};
-  await window._setDoc(window._doc(id),data);
-  savedScripts.unshift({id,...data});
-  updateBadge();
-  if(activePage==='scripts')renderScripts();
+  if(!window._db||!window._firebaseReady){showToast('⚠️ Firebase مش متصل');return;}
+  try{
+    const id='s'+Date.now();
+    const data={title,content,track:tr,createdAt:Date.now(),date:new Date().toLocaleDateString('ar-SA')};
+    await window._setDoc(window._doc(id),data);
+    savedScripts.unshift({id,...data});
+    updateBadge();
+    if(activePage==='scripts')renderScripts();
+  }catch(e){
+    console.error('Save error:',e);
+    showToast('⚠️ خطأ بالحفظ: '+e.message);
+  }
 }
+
 async function delScript(id){
+  if(!confirm('حذف السكربت؟'))return;
   await window._deleteDoc(window._doc(id));
   savedScripts=savedScripts.filter(s=>s.id!==id);
-  updateBadge();renderScripts();showToast('🗑 تم الحذف');
+  updateBadge();renderScripts();showToast('تم الحذف');
 }
+
 async function saveEdit(id){
   const el=document.getElementById('ed-'+id);if(!el)return;
   await window._updateDoc(window._doc(id),{content:el.value});
   const s=savedScripts.find(s=>s.id===id);if(s)s.content=el.value;
   editing=null;renderScripts();showToast('✓ تم التعديل');
 }
+
 function updateBadge(){
   const n=savedScripts.length;
-  document.getElementById('navScriptsLbl').textContent=n>0?`السكربتات (${n})`:'السكربتات';
+  document.getElementById('navScriptsLbl').textContent=n>0?`المحفوظات (${n})`:'المحفوظات';
 }
 
-/* Scripts page */
+/* ========== SCRIPTS PAGE ========== */
 function renderScripts(){
   const c=document.getElementById('scriptsContainer');
+  const addBtn=`<button class="add-note-btn" onclick="openNoteModal()">+ ملاحظة</button>`;
   if(!savedScripts.length){
-    c.innerHTML=`<div class="sp-header"><div class="sp-title">SAVED SCRIPTS</div><div class="sp-count">0 سكربت</div></div><div class="sp-empty"><div class="sp-empty-icon">📁</div><div class="sp-empty-txt">ما في سكربتات بعد.<br>اكتب سكربت وأضغط 💾 احفظ.</div></div>`;
+    c.innerHTML=`<div class="scripts-header"><div class="scripts-title">المحفوظات</div><div style="display:flex;align-items:center;gap:10px"><div class="scripts-count">0</div>${addBtn}</div></div><div class="scripts-empty"><div class="se-icon">◈</div><div class="se-txt">ما في محفوظات بعد<br>اكتب سكربت واضغط 💾 أو أضف ملاحظة</div></div>`;
     return;
   }
-  let html=`<div class="sp-header"><div class="sp-title">SAVED SCRIPTS</div><div class="sp-count">${savedScripts.length} سكربت</div></div>`;
+  let html=`<div class="scripts-header"><div class="scripts-title">المحفوظات</div><div style="display:flex;align-items:center;gap:10px"><div class="scripts-count">${savedScripts.length}</div>${addBtn}</div></div>`;
   savedScripts.forEach((s,i)=>{
     const isOpen=expanded.has(s.id);
     const isEdit=editing===s.id;
-    const n=String(savedScripts.length-i).padStart(2,'0');
-    html+=`<div class="ss">
-      <div class="ss-hdr" onclick="togScript('${s.id}')">
-        <div class="ss-left">
-          <div class="ss-num">#${n}</div>
-          <div><div class="ss-ttl">${esc(s.title)}</div><div class="ss-date">${s.date||''}</div></div>
+    const num=String(savedScripts.length-i).padStart(2,'0');
+    const isNote=s.track==='NOTE';
+    const badgeClass=isNote?'sb-note':s.track==='A'?'sb-a':'sb-b';
+    const badgeText=isNote?'📝 NOTE':s.track==='A'?'BRAND':'MATRIX';
+    html+=`<div class="s-item">
+      <div class="s-head" onclick="togScript('${s.id}')">
+        <div class="s-left">
+          <div class="s-num">#${num}</div>
+          <div class="s-info"><div class="s-title-text">${esc(s.title)}</div><div class="s-date">${s.date||''}</div></div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span class="ss-tbadge ${s.track==='A'?'ss-ta':'ss-tb'}">${s.track==='A'?'BRAND':'MATRIX'}</span>
-          <span style="color:var(--txt3);font-size:12px">${isOpen?'▴':'▾'}</span>
+        <div class="s-right">
+          <span class="s-badge ${badgeClass}">${badgeText}</span>
+          <span class="s-arrow">${isOpen?'▴':'▾'}</span>
         </div>
       </div>
-      <div class="ss-body${isOpen?' open':''}">
+      <div class="s-body${isOpen?' open':''}">
         ${isEdit
-          ?`<textarea class="ss-edit" id="ed-${s.id}">${esc(s.content)}</textarea>
-            <div style="display:flex;gap:8px;margin-top:8px">
-              <button class="ss-btn" onclick="editing=null;renderScripts()">إلغاء</button>
-              <button class="ss-save-edit" onclick="saveEdit('${s.id}')">حفظ ✓</button>
-            </div>`
-          :`<div class="ss-content">${esc(s.content)}</div>
-            <div class="ss-acts">
-              <button class="ss-btn e" onclick="startEdit('${s.id}')">✏️ تعديل</button>
-              <button class="ss-btn" onclick="copyTxt(this,'${s.content.replace(/'/g,"\\'")}')">نسخ ↗</button>
-              <button class="ss-btn d" onclick="delScript('${s.id}')">🗑 حذف</button>
-            </div>`
+          ?`<textarea class="s-edit-area" id="ed-${s.id}">${esc(s.content)}</textarea><div class="s-edit-actions"><button class="s-cancel-btn" onclick="editing=null;renderScripts()">إلغاء</button><button class="s-save-btn" onclick="saveEdit('${s.id}')">حفظ ✓</button></div>`
+          :`<div class="s-content">${esc(s.content)}</div><div class="s-actions"><button class="s-btn" onclick="startEdit('${s.id}')">✏️ تعديل</button><button class="s-btn" onclick="copySaved(this,'${s.id}')">نسخ</button><button class="s-btn" onclick="delScript('${s.id}')">🗑 حذف</button></div>`
         }
       </div>
     </div>`;
   });
   c.innerHTML=html;
 }
+
 function togScript(id){if(expanded.has(id))expanded.delete(id);else expanded.add(id);renderScripts();}
 function startEdit(id){editing=id;expanded.add(id);renderScripts();setTimeout(()=>{const el=document.getElementById('ed-'+id);if(el)el.focus();},50);}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-renderQuick();renderChips();
+/* ========== INIT ========== */
+renderTemplates();
+renderWelcomeCards();
 </script>
 </body>
 </html>
