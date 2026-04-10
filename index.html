@@ -574,25 +574,26 @@ function closeSaveModal(){
 async function confirmSave(){
   const title=document.getElementById('saveTitle').value.trim();
   if(!title){document.getElementById('saveTitle').style.borderColor='var(--red)';return;}
+  const content=pendingSave;
   closeSaveModal();
-  await addScript(title,pendingSave,track);
+  await addScript(title,content,track);
   showToast('✓ تم الحفظ');
 }
 
 async function confirmSaveSplit(){
   if(!detectedParts)return;
   const baseTitle=document.getElementById('saveTitle').value.trim();
+  const parts=[...detectedParts];
   closeSaveModal();
   let count=0;
-  for(let i=0;i<detectedParts.length;i++){
-    const p=detectedParts[i];
+  for(let i=0;i<parts.length;i++){
+    const p=parts[i];
     const title=baseTitle?`${baseTitle} — ${i+1}. ${p.title}`:`${i+1}. ${p.title}`;
     await addScript(title,p.content,track);
     count++;
     await new Promise(r=>setTimeout(r,50));
   }
   showToast(`✓ تم حفظ ${count} سكربتات`);
-  detectedParts=null;
 }
 
 /* ========== NOTE MODAL ========== */
